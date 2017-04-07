@@ -1,0 +1,30 @@
+package org.dantelab.kotlinweakreferences
+
+import java.lang.ref.WeakReference
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
+
+/**
+ * Created by ivanbrazhnikov on 08/04/2017.
+ */
+
+class WeakRef<T>(obj: T? = null): ReadWriteProperty<Any?, T?> {
+
+    private var wref : WeakReference<T>?
+
+    init {
+        this.wref = obj?.let { WeakReference(it) }
+    }
+
+    override fun getValue(thisRef:Any? , property: KProperty<*>): T? {
+        return wref?.get()
+    }
+
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: T?) {
+        wref = value?.let { WeakReference(value) }
+    }
+}
+
+fun <T> weak(obj: T? = null) = WeakRef(obj)
+
+fun <T>T.weaked() = WeakReference(this)
